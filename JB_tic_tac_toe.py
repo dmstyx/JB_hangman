@@ -13,33 +13,29 @@ print(f"""
 win_lines = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
              [0, 4, 8], [6, 4, 2]]
 
+# count the number of winning combinations
 num = 0
 
-# For X to win, for Y to win and game not finished
+# Iterate through list for X or Y to win
 def win(win_lines, tics):
     global num  
     for items in win_lines:
-        if abs(tics.count("X") - tics.count("O")) > 1:
-            return "Impossible"
-        elif tics[items[0]] == tics[items[1]] == tics[items[2]] == 'X':
+        if tics[items[0]] == tics[items[1]] == tics[items[2]] == 'X':
             num += 1
-            return "X wins"
+            print("X wins")
         elif tics[items[0]] == tics[items[1]] == tics[items[2]] == 'O':
             num += 1
-            return "O wins"
+            print("O wins")
 
-print(win(win_lines, tics))
-print(tics.count("X") + tics.count("O"))
-print(num)
+# Show winner
+win(win_lines, tics)
 
-if num == 0 and (tics.count("x") + tics.count("O") < 9):
+# DNF conditions
+if abs(tics.count("X") - tics.count("O")) > 1:
+    print("Impossible")
+elif num > 1:
+    print("Impossible")
+elif num == 0 and (tics.count("X") + tics.count("O") < 9):
     print("Game not finished")
-    
-# # Draw condition
-# if win(win_lines, tics) == None:
-#     if count > 1 or tics.count("X") - tics.count("0"):
-#         print("Impossible")
-#     elif tics.count('X') + tics.count('O') < 9:
-#         print("Game not finished")
-#     elif tics.count("X") + tics.count("O") == 9:
-#         print("Draw")
+elif (tics.count("X") + tics.count("O")) and num == 0 and win(win_lines, tics) == None:
+    print("Draw")
