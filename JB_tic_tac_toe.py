@@ -39,3 +39,16 @@ elif num == 0 and (tics.count("X") + tics.count("O") < 9):
     print("Game not finished")
 elif (tics.count("X") + tics.count("O")) and num == 0 and win(win_lines, tics) == None:
     print("Draw")
+
+
+
+    # while True:
+    # x , y = input("Enter the coordinates:").split()
+    # if x.isdigit() and y.isdigit():
+    #     if int(x) and int(y) in [1,2,3]:
+    #         print("All good")
+    #         break
+    #     else:
+    #         print("Coordinates should be from 1 to 3!")
+    # else:
+    #     print("You should enter numbers!")
