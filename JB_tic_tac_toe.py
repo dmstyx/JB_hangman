@@ -42,13 +42,56 @@ elif (tics.count("X") + tics.count("O")) and num == 0 and win(win_lines, tics) =
 
 
 
-    # while True:
-    # x , y = input("Enter the coordinates:").split()
-    # if x.isdigit() and y.isdigit():
-    #     if int(x) and int(y) in [1,2,3]:
-    #         print("All good")
-    #         break
-    #     else:
-    #         print("Coordinates should be from 1 to 3!")
-    # else:
-    #     print("You should enter numbers!")
+tics = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+
+# Show game map
+def board(tics):
+      
+    print(f"""
+    ---------
+    | {tics[0]} {tics[1]} {tics[2]} |
+    | {tics[3]} {tics[4]} {tics[5]} |
+    | {tics[6]} {tics[7]} {tics[8]} |
+    ---------
+    """)
+
+board(tics)
+
+while True:
+    try:          
+        x , y = input("Enter the coordinates:").split()
+        if x.isdigit() and y.isdigit():
+            x = int(x)
+            y = int(y)
+            if x and y in [1,2,3]:
+                coords = (x - 1)  + (9 - (3 * y))
+                if tics[coords] == ' ':
+                    tics[coords] = 'X'
+                    board(tics)
+                    try:          
+                      x , y = input("Enter the coordinates:").split()
+                      if x.isdigit() and y.isdigit():
+                          x = int(x)
+                          y = int(y)
+                          if x and y in [1,2,3]:
+                              coords = (x - 1)  + (9 - (3 * y))
+                              if tics[coords] == ' ':
+                                  tics[coords] = 'O'
+                                  board(tics)
+                                  print(tics)
+                              else:
+                                  print('This cell is occupied! Choose another one!')
+                          else:
+                              print("Coordinates should be from 1 to 3!")
+                      else:
+                          print("You should enter numbers!")
+                    except:
+                      print("You should enter numbers!")
+                else:
+                    print('This cell is occupied! Choose another one!')
+            else:
+                print("Coordinates should be from 1 to 3!")
+        else:
+            print("You should enter numbers!")
+    except:
+        print("You should enter numbers!")
