@@ -21,8 +21,9 @@ def main_menu():
 # create random account number and pin
 def create_account():
 
-    card_number = random.randint(4000003938320895, 4000009999999999)
+    card_number = random.randint(400000393832089, 400000999999999)
     pin_number = random.randint(1000, 10000)
+    
     user["card_number"] = card_number
     user["pin_number"] = pin_number
     print(f"""
@@ -36,8 +37,7 @@ Your card PIN:
 # return to main menu
     main_menu()
 
-# log in usings new details
-log_in 
+# log in usings new details 
 def log_in():
     print()
     card = int(input("Enter your card number:"))
@@ -70,4 +70,35 @@ def balance():
 def exit_acc():
     exit()
 
+def lahn_checker(cn):
+
+    list_cn = [int(i) for i in str(cn)]
+    check_sum = list_cn.pop()
+    nums = []
+    for i in range(len(list_cn)):
+        if i % 2 == 0:
+            nums.append(list_cn[i] * 2)
+        else:
+            nums.append(list_cn[i])
+    total_nums = check_sum + sum([x - 9 if x > 9 else x for x in nums]) 
+
+    print(total_nums)
+
+def lahn_genarator(cn):
+    list_cn = [int(i) for i in str(cn)]
+    nums = []
+    for i in range(len(list_cn)):
+        if i % 2 == 0:
+            nums.append(list_cn[i] * 2)
+        else:
+            nums.append(list_cn[i])
+    total_nums = sum([x - 9 if x > 9 else x for x in nums]) 
+    new_num = 10 - (total_nums % 10)
+    list_cn.append(new_num)
+
+    print(total_nums + new_num)
+    print(list_cn)
+
+
 main_menu()
+
