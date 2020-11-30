@@ -1,88 +1,61 @@
-# JetBrains banking app
+import database
 import random
+import sys
 
-# dictionary for all the users, cards and pins
-user = {}
-
-# main menu at start-up
-
-def main_menu():
-    start = int(input("""1. Create an account
+MENU_PROMPT = """
+1. Create an account
 2. Log into account
-0. Exit   
-"""))
-    if start == 1:
-      create_account()
-    elif start == 2:
-      log_in()
-    elif start == 0:
-      exit_acc()
+0. Exit
+"""
 
-# create random account number and pin
-def create_account():
+def menu():
+  connection = database.connect()
+  database.create_tables(connection)
 
-    card_number = random.randint(400000393832089, 400000999999999)
+  while (user_input := input(MENU_PROMPT)) != "5":
+      if user_input == "1":
+          prompt_add_new_card(connection)
+      elif user_input == "2":
+          log_in(connection)
+      elif user_input == "3":
+          prompt_find_card(connection)
+      elif user_input == "4":
+          prompt_see_all_cards(connection)
+      elif user_input == "0":
+          exit_acc()
+      else:
+          print("Invalid input")
+
+def prompt_add_new_card(connection):
+
+    card_num = random.randint(400000393832089, 400000999999999)
     pin_number = random.randint(1000, 10000)
-    
-    user["card_number"] = card_number
-    user["pin_number"] = pin_number
+    card_number = lahn_genarator(card_num)
+    number = int(card_number)
+    pin = pin_number
+    balance = 0
     print(f"""
 
 Your card has been created
 Your card number:
-{card_number}
+{number}
 Your card PIN:
-{pin_number}
+{pin}
 """)
-# return to main menu
-    main_menu()
 
-# log in usings new details 
-def log_in():
-    print()
-    card = int(input("Enter your card number:"))
-    pin = int(input("Enter your PIN:"))
-    if card == user["card_number"] and pin == user["pin_number"]:
-        print("You have successfully logged in!")
-        logged_in()
-    else:
-        print("Wrong card number or PIN!")
-        main_menu()
+    database.add_card(connection, number, pin, balance)
 
-# logged in menu
-def logged_in():
-        logged_in = int(input("""1. Balance
-2. Log out
-0. Exit
-"""))
-        if logged_in == 1:
-            balance()
-        elif logged_in == 2:
-            print("You have successfully logged out!")
-            main_menu()
+def prompt_see_all_cards(connection):
+   cards = database.get_all_cards(connection)
+   for card in cards:
+      print(f"Acc: {card[1]} Pin: {card[2]} - £{card[3]} ")
 
-# show balance
-def balance():
-    print("Balance:",0)
-    logged_in()
+def prompt_find_card(connection):
+    number = input("Enter card number to find: ")
+    cards = database.get_card_by_number(connection, number)
 
-#  quit
-def exit_acc():
-    exit()
-
-def lahn_checker(cn):
-
-    list_cn = [int(i) for i in str(cn)]
-    check_sum = list_cn.pop()
-    nums = []
-    for i in range(len(list_cn)):
-        if i % 2 == 0:
-            nums.append(list_cn[i] * 2)
-        else:
-            nums.append(list_cn[i])
-    total_nums = check_sum + sum([x - 9 if x > 9 else x for x in nums]) 
-
-    print(total_nums)
+    for card in cards:
+        print(f"ACC:{card[1]} Pin:{card[2]} - £{card[3]}")
 
 def lahn_genarator(cn):
     list_cn = [int(i) for i in str(cn)]
@@ -92,13 +65,55 @@ def lahn_genarator(cn):
             nums.append(list_cn[i] * 2)
         else:
             nums.append(list_cn[i])
-    total_nums = sum([x - 9 if x > 9 else x for x in nums]) 
-    new_num = 10 - (total_nums % 10)
-    list_cn.append(new_num)
+    total_nums = sum([x - 9 if x > 9 else x for x in nums])
+    if total_nums % 10 != 0:
+        new_num = 10 - (total_nums % 10)
+        list_cn.append(new_num)
+    result = list_cn
+    if len(result) < 16:
+        result.append(0)
+    values = ''.join([str(i) for i in result])
+    return values
 
-    print(total_nums + new_num)
-    print(list_cn)
+def log_in(connection):
+    print()
+    number = input("Enter your card number:")
+    pin = input("Enter your PIN:")
 
+    cards = database.get_card_by_number(connection, number)
 
-main_menu()
+    if cards:
+        for card in cards:
+            if number == card[1] and pin == card[2]:
+                print("You have successfully logged in!")
+                logged_in()
+        else:
+            print("Wrong card number or PIN!")
+            menu()
+    else:
+        print("\nWrong card number or PIN!")
+        menu()
 
+def logged_in():
+    logged_in = int(input("""1. Balance
+2. Log out
+0. Exit
+"""))
+    if logged_in == 1:
+        balance()
+    elif logged_in == 2:
+        print("You have successfully logged out!")
+        menu()
+    elif logged_in == 0:
+      print("Bye")
+      exit_acc()
+
+def balance():
+  print("Balance:",0)
+  logged_in()
+
+def exit_acc():
+    print("Bye")
+    sys.exit()
+
+menu()
